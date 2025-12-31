@@ -1,86 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Happy New Year Sneha 🎆</title>
 
 <style>
 body {
   margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background: black;
-  color: white;
+  background: radial-gradient(circle at bottom, #050505, #000);
   overflow: hidden;
+  font-family: 'Segoe UI', sans-serif;
+  color: white;
   text-align: center;
 }
 
-/* Screens */
+/* SCREENS */
 .screen {
+  position: absolute;
+  inset: 0;
   display: none;
-  width: 100vw;
-  height: 100vh;
-  position: relative;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
 }
 
 .active {
   display: flex;
 }
 
-/* FIREWORK ROCKET */
-.rocket {
-  position: absolute;
-  bottom: -60px;
-  width: 6px;
-  height: 45px;
-  background: linear-gradient(to top, orange, yellow);
-  border-radius: 5px;
-  box-shadow: 0 0 20px orange;
-  animation: launch 2.5s linear infinite;
-}
-
-/* Rocket movement */
-@keyframes launch {
-  0% { bottom: -60px; opacity: 1; }
-  70% { bottom: 70%; opacity: 1; }
-  100% { bottom: 70%; opacity: 0; }
-}
-
-/* Firework burst particles */
-.particle {
-  position: absolute;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  opacity: 0;
-  animation: explode 1.2s ease-out infinite;
-}
-
-@keyframes explode {
-  0% {
-    transform: scale(0);
-    opacity: 1;
-  }
-  70% {
-    opacity: 1;
-  }
-  100% {
-    transform: translate(var(--x), var(--y)) scale(0);
-    opacity: 0;
-  }
-}
-
-/* Text */
+/* TEXT */
 .glow {
-  font-size: 2.5rem;
+  font-size: 2.7rem;
   text-shadow: 0 0 15px gold;
-  z-index: 10;
+  z-index: 5;
 }
 
-/* Buttons */
+/* BUTTONS */
 button {
   margin-top: 40px;
   padding: 15px 35px;
@@ -92,7 +48,7 @@ button {
 }
 
 .red-btn {
-  background: red;
+  background: crimson;
   color: white;
 }
 
@@ -100,6 +56,15 @@ button {
   background: darkred;
 }
 
+/* FIREWORK CANVAS */
+canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+/* INPUT */
 input {
   padding: 12px;
   width: 260px;
@@ -113,11 +78,11 @@ input {
 
 <body>
 
+<canvas id="fireworks"></canvas>
+
 <!-- SCREEN 1 -->
 <div class="screen active" id="screen1">
   <div class="glow">🎆 Happy New Year Sneha 🎆</div>
-  <div class="rocket" id="rocket"></div>
-
   <button onclick="goNext()">Let's Celebrate Together 🎉</button>
 </div>
 
@@ -133,47 +98,122 @@ input {
   <h1 class="glow">❤️ Sanskar Loves You The Most ❤️</h1>
 </div>
 
-<!-- YouTube Audio -->
+<!-- MUSIC -->
 <iframe
   id="music"
   width="0"
   height="0"
   src="https://www.youtube.com/embed/P61FN0qUmE0?start=49&enablejsapi=1&loop=1&playlist=P61FN0qUmE0"
-  frameborder="0"
   allow="autoplay"
 ></iframe>
 
 <script>
+const canvas = document.getElementById("fireworks");
+const ctx = canvas.getContext("2d");
+
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.onresize = resize;
+
+class Firework {
+  constructor() {
+    this.x = Math.random() * canvas.width;
+    this.y = canvas.height;
+    this.targetY = Math.random() * canvas.height * 0.4 + 100;
+    this.speed = 6;
+    this.exploded = false;
+    this.particles = [];
+  }
+
+  update() {
+    if (!this.exploded) {
+      this.y -= this.speed;
+      if (this.y <= this.targetY) {
+        this.explode();
+      }
+    } else {
+      this.particles.forEach(p => p.update());
+    }
+  }
+
+  draw() {
+    if (!this.exploded) {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
+      ctx.fillStyle = "orange";
+      ctx.fill();
+    } else {
+      this.particles.forEach(p => p.draw());
+    }
+  }
+
+  explode() {
+    this.exploded = true;
+    for (let i = 0; i < 40; i++) {
+      this.particles.push(new Particle(this.x, this.y));
+    }
+  }
+}
+
+class Particle {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.angle = Math.random() * Math.PI * 2;
+    this.speed = Math.random() * 4 + 2;
+    this.alpha = 1;
+    this.color = `hsl(${Math.random() * 360}, 100%, 60%)`;
+  }
+
+  update() {
+    this.x += Math.cos(this.angle) * this.speed;
+    this.y += Math.sin(this.angle) * this.speed;
+    this.alpha -= 0.02;
+  }
+
+  draw() {
+    ctx.globalAlpha = this.alpha;
+    ctx.fillStyle = this.color;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  }
+}
+
+let fireworks = [];
+
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  if (Math.random() < 0.04) {
+    fireworks.push(new Firework());
+  }
+
+  fireworks.forEach((fw, i) => {
+    fw.update();
+    fw.draw();
+    if (fw.exploded && fw.particles.every(p => p.alpha <= 0)) {
+      fireworks.splice(i, 1);
+    }
+  });
+
+  requestAnimationFrame(animate);
+}
+
+animate();
+
+// MUSIC
 function goNext() {
   document.getElementById("screen1").classList.remove("active");
   document.getElementById("screen2").classList.add("active");
 
-  // Play music
   const iframe = document.getElementById("music");
   iframe.src += "&autoplay=1";
 }
-
-// Firework burst loop
-setInterval(() => {
-  const rocket = document.getElementById("rocket");
-
-  for (let i = 0; i < 20; i++) {
-    const particle = document.createElement("div");
-    particle.className = "particle";
-    particle.style.left = "50%";
-    particle.style.top = "30%";
-    particle.style.background = `hsl(${Math.random() * 360}, 100%, 60%)`;
-
-    const x = (Math.random() - 0.5) * 200 + "px";
-    const y = (Math.random() - 0.5) * 200 + "px";
-    particle.style.setProperty("--x", x);
-    particle.style.setProperty("--y", y);
-
-    document.body.appendChild(particle);
-
-    setTimeout(() => particle.remove(), 1200);
-  }
-}, 2500);
 
 function goFinal() {
   document.getElementById("screen2").classList.remove("active");
