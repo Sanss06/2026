@@ -15,12 +15,11 @@ body {
   text-align: center;
 }
 
-/* ===== SCREENS ===== */
+/* Screens */
 .screen {
   display: none;
   width: 100vw;
   height: 100vh;
-  position: relative;
   justify-content: center;
   align-items: center;
   flex-direction: column;
@@ -30,7 +29,7 @@ body {
   display: flex;
 }
 
-/* ===== FIREWORK ===== */
+/* Firework */
 .rocket {
   position: absolute;
   bottom: -50px;
@@ -38,13 +37,13 @@ body {
   height: 40px;
   background: orange;
   border-radius: 5px;
-  animation: launch 2.5s ease-out forwards;
   box-shadow: 0 0 20px orange;
+  animation: launch 2.5s ease-in-out infinite;
 }
 
 @keyframes launch {
-  0% { bottom: -50px; }
-  80% { bottom: 70%; }
+  0% { bottom: -50px; opacity: 1; }
+  70% { bottom: 70%; opacity: 1; }
   100% { bottom: 70%; opacity: 0; }
 }
 
@@ -53,31 +52,41 @@ body {
   top: 25%;
   font-size: 2.5rem;
   opacity: 0;
-  animation: burst 1s ease forwards;
+  animation: burst 2.5s infinite;
 }
 
 @keyframes burst {
   0% { transform: scale(0); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
+  40% { transform: scale(1.2); opacity: 1; }
+  70% { transform: scale(1); opacity: 1; }
+  100% { opacity: 0; }
 }
 
-/* ===== BUTTON ===== */
+/* Buttons */
 button {
   margin-top: 30px;
-  padding: 15px 30px;
+  padding: 15px 35px;
   font-size: 18px;
   border-radius: 30px;
   border: none;
-  background: gold;
   cursor: pointer;
   transition: 0.3s;
 }
 
-button:hover {
-  background: orange;
+/* Red Affirm button */
+.red-btn {
+  background: red;
+  color: white;
 }
 
-/* ===== INPUT ===== */
+.red-btn:hover {
+  background: darkred;
+}
+
+.glow {
+  text-shadow: 0 0 15px gold;
+}
+
 input {
   padding: 12px;
   width: 260px;
@@ -85,11 +94,6 @@ input {
   border: none;
   font-size: 16px;
   margin-top: 20px;
-}
-
-/* Glow effect */
-.glow {
-  text-shadow: 0 0 15px gold;
 }
 </style>
 </head>
@@ -99,7 +103,7 @@ input {
 <!-- SCREEN 1 -->
 <div class="screen active" id="screen1">
   <div class="rocket"></div>
-  <div class="burst glow" id="message">🎆 Happy New Year Sneha 🎆</div>
+  <div class="burst glow">🎆 Happy New Year Sneha 🎆</div>
 
   <button onclick="goNext()">Let's Celebrate Together 🎉</button>
 </div>
@@ -107,12 +111,8 @@ input {
 <!-- SCREEN 2 -->
 <div class="screen" id="screen2">
   <h1 class="glow">Write a New Year Resolution 💫</h1>
-  <input type="text" placeholder="Type your resolution here..." />
-  <button onclick="goFinal()">Affirm ✨</button>
-
-  <audio id="music" loop>
-    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-  </audio>
+  <input type="text" placeholder="Type your resolution..." />
+  <button class="red-btn" onclick="goFinal()">Affirm ❤️</button>
 </div>
 
 <!-- SCREEN 3 -->
@@ -120,11 +120,23 @@ input {
   <h1 class="glow">❤️ Sanskar Loves You The Most ❤️</h1>
 </div>
 
+<!-- YouTube Audio -->
+<iframe id="music"
+  width="0"
+  height="0"
+  src="https://www.youtube.com/embed/P61FN0qUmE0?enablejsapi=1&loop=1&playlist=P61FN0qUmE0"
+  frameborder="0"
+  allow="autoplay"
+></iframe>
+
 <script>
 function goNext() {
   document.getElementById("screen1").classList.remove("active");
   document.getElementById("screen2").classList.add("active");
-  document.getElementById("music").play();
+
+  // Start music
+  const iframe = document.getElementById("music");
+  iframe.src += "&autoplay=1";
 }
 
 function goFinal() {
