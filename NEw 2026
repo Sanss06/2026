@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy New Year Sneha 🎆</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: black;
+  color: white;
+  overflow: hidden;
+  text-align: center;
+}
+
+/* ===== SCREENS ===== */
+.screen {
+  display: none;
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.active {
+  display: flex;
+}
+
+/* ===== FIREWORK ===== */
+.rocket {
+  position: absolute;
+  bottom: -50px;
+  width: 6px;
+  height: 40px;
+  background: orange;
+  border-radius: 5px;
+  animation: launch 2.5s ease-out forwards;
+  box-shadow: 0 0 20px orange;
+}
+
+@keyframes launch {
+  0% { bottom: -50px; }
+  80% { bottom: 70%; }
+  100% { bottom: 70%; opacity: 0; }
+}
+
+.burst {
+  position: absolute;
+  top: 25%;
+  font-size: 2.5rem;
+  opacity: 0;
+  animation: burst 1s ease forwards;
+}
+
+@keyframes burst {
+  0% { transform: scale(0); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* ===== BUTTON ===== */
+button {
+  margin-top: 30px;
+  padding: 15px 30px;
+  font-size: 18px;
+  border-radius: 30px;
+  border: none;
+  background: gold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: orange;
+}
+
+/* ===== INPUT ===== */
+input {
+  padding: 12px;
+  width: 260px;
+  border-radius: 8px;
+  border: none;
+  font-size: 16px;
+  margin-top: 20px;
+}
+
+/* Glow effect */
+.glow {
+  text-shadow: 0 0 15px gold;
+}
+</style>
+</head>
+
+<body>
+
+<!-- SCREEN 1 -->
+<div class="screen active" id="screen1">
+  <div class="rocket"></div>
+  <div class="burst glow" id="message">🎆 Happy New Year Sneha 🎆</div>
+
+  <button onclick="goNext()">Let's Celebrate Together 🎉</button>
+</div>
+
+<!-- SCREEN 2 -->
+<div class="screen" id="screen2">
+  <h1 class="glow">Write a New Year Resolution 💫</h1>
+  <input type="text" placeholder="Type your resolution here..." />
+  <button onclick="goFinal()">Affirm ✨</button>
+
+  <audio id="music" loop>
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+  </audio>
+</div>
+
+<!-- SCREEN 3 -->
+<div class="screen" id="screen3">
+  <h1 class="glow">❤️ Sanskar Loves You The Most ❤️</h1>
+</div>
+
+<script>
+function goNext() {
+  document.getElementById("screen1").classList.remove("active");
+  document.getElementById("screen2").classList.add("active");
+  document.getElementById("music").play();
+}
+
+function goFinal() {
+  document.getElementById("screen2").classList.remove("active");
+  document.getElementById("screen3").classList.add("active");
+}
+</script>
+
+</body>
+</html>
